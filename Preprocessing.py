@@ -70,12 +70,25 @@ def torange(array):
     return new_array.astype('uint8')
 
 def crop (array):
-    r, c = array.shape
+    strip_r = array[400:500,:]
+    strip_c = array[:, 400:500]
+    for i in range (strip_r.shape[1]):
+        if strip_r[:,i].max()> 50:
+            break
+    for j in range (strip_c.shape[0]):
+        if strip_c[j,:].max()> 50:
+            break
+    offset = max(i, j)
+    if offset>2:
+        array2 = array[offset:-offset, offset:-offset]
+    else:
+        array2 = array
+    r, c = array2.shape
     if r==c:
-        return array[10:r-10,10:c-10]
+        return array2[10:r-10,10:c-10]
     else:
         diff = int((c-r)/2)
-        img = array[10:(r-10),(10+diff):(c-10-diff)]
+        img = array2[10:(r-10),(10+diff):(c-10-diff)]
         img2 = remove_ouliers(img)
         return img2
 
